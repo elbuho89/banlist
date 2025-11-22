@@ -2,12 +2,8 @@
 
 **[https://banlist.elbuho89.org](https://banlist.elbuho89.org)**
 
------
-# 🗺️ GUÍA DEL REPOSITORIO Y MENÚ PRINCIPAL
-
 Este documento sirve como un mapa detallado para entender la estructura, la organización de los archivos y los protocolos de esta Lista de Baneos de Bots de Twitch.
-
-**URL del Sitio Web:** `https://banlist.elbuho89.org`
+This document serves as a detailed map to understand the structure, file organization, and protocols of this Twitch Bot Ban List.
 
 ---
 
