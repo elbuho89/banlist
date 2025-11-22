@@ -19,12 +19,3 @@ Esta lista tiene como único objetivo el monitoreo y la advertencia. Se requiere
 1.  **Verificación Histórica:** Revisar el historial público de la cuenta en Twitch y herramientas de moderación.
 2.  **Análisis de Actividad:** Determinar si la cuenta muestra actividad humana reciente y legítima (chats, follows reales, etc.).
 3.  **Aplicación de Sanción:** Solo después de una confirmación manual y fundamentada de que el usuario está realizando actividad maliciosa **actual**, se podrá proceder a la sanción.
-
----
-
-### Cuentas Listadas para Revisión
-
-*gladiador67*
-*ingenieroerwinsaavedra*
-*arielplaza_s*
-*jorgeassaf*
