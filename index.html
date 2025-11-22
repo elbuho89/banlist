@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡️ EL BUHO 89: TWITCH BOT BAN LIST (API READY)</title>
+    <meta name="description" content="Lista dinámica bilingüe de usuarios maliciosos en Twitch, lista para API y moderación.">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        /* --- VARIABLES DEL BUHO --- */
+        :root {
+            --buho-dark: #1A1A1A;
+            --buho-gold: #FFC300;
+            --buho-red: #E94560;
+            --buho-light-gray: #333333;
+            --buho-text-light: #F0F0F0;
+            --font-family-primary: 'Montserrat', sans-serif;
+            --shadow-base: 0 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        /* --- ESTILOS BASE Y TIPOGRAFÍA --- */
+        body {
+            background-color: var(--buho-dark);
+            color: var(--buho-text-light);
+            font-family: var(--font-family-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            font-weight: 900;
+            color: var(--buho-gold);
+            margin-top: 1.5em;
+        }
+        h1 { font-size: 2.5em; text-align: center; }
+        h2 { font-size: 1.8em; border-bottom: 2px solid var(--buho-light-gray); padding-bottom: 5px; }
+        h3 { color: var(--buho-red); font-size: 1.3em; margin-top: 1em; }
+
+        /* --- ENLACES Y BOTONES DE ACCIÓN --- */
+        a {
+            color: var(--buho-red);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        a:hover {
+            color: var(--buho-gold);
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--buho-red);
+            color: white;
+            border-radius: 5px;
+            font-weight: 700;
+            margin: 10px 5px;
+            text-transform: uppercase;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .cta-button:hover {
+            background-color: var(--buho-gold);
+            color: var(--buho-dark);
+            transform: translateY(-2px);
+        }
+        .api-link {
+            background-color: var(--buho-light-gray);
+            color: var(--buho-gold);
+            border: 1px solid var(--buho-gold);
+        }
+        .api-link:hover {
+            background-color: var(--buho-gold);
+            color: var(--buho-dark);
+        }
+        
+        /* --- SECCIÓN DE RESUMEN (RESPONSIVE) --- */
+        .summary-flex {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap; /* Permite que las columnas se apilen en móvil */
+        }
+        .summary-flex > div {
+            flex: 1 1 45%; /* Flex-grow, flex-shrink, flex-basis */
+        }
+        
+        /* --- ADVERTENCIAS --- */
+        .warning {
+            color: var(--buho-red);
+            font-weight: 700;
+        }
+        .warning-box {
+            background-color: #331A1A;
+            border-left: 5px solid var(--buho-red);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        /* --- TABLA DE NAVEGACIÓN (MENÚ) --- */
+        .menu-table-wrapper {
+            overflow-x: auto; /* Permite desplazamiento horizontal en pantallas pequeñas */
+        }
+        .menu-table {
+            width: 100%;
+            min-width: 600px; /* Asegura que la tabla no se colapse demasiado */
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: var(--shadow-base);
+        }
+        .menu-table th, .menu-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--buho-light-gray);
+        }
+        .menu-table th {
+            background-color: var(--buho-light-gray);
+            color: var(--buho-gold);
+            text-transform: uppercase;
+        }
+        .menu-table tr:nth-child(even) {
+            background-color: #242424;
+        }
+        .menu-table td a {
+            font-weight: 700;
+        }
+        .indent {
+            padding-left: 30px;
+        }
+
+        /* --- PESTAÑAS (TABS) PARA PROTOCOLO --- */
+        .tabs {
+            display: flex;
+            margin-bottom: -1px; /* Para que la pestaña activa se fusione con el contenido */
+        }
+        .tab-button {
+            background-color: var(--buho-light-gray);
+            border: 1px solid var(--buho-light-gray);
+            color: var(--buho-text-light);
+            padding: 10px 20px;
+            cursor: pointer;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            font-weight: 700;
+        }
+        .tab-button.active {
+            background-color: var(--buho-dark);
+            border-bottom: 2px solid var(--buho-red);
+            color: var(--buho-gold);
+        }
+        .tab-content {
+            border: 1px solid var(--buho-light-gray);
+            padding: 30px;
+            background-color: var(--buho-dark);
+            min-height: 400px;
+        }
+
+        /* --- MEDIA QUERIES (RESPONSIVE) --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .summary-flex > div {
+                flex-basis: 100%; /* Las columnas se apilan verticalmente */
+            }
+            .api-buttons a {
+                display: block; /* Botones de API en bloque */
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <header style="text-align: center; padding: 40px 0;">
+            <h1 style="color: white;"><span style="color: var(--buho-red);">🛡️ EL BUHO 89:</span> TWITCH BOT BAN LIST</h1>
+            <p style="font-size: 1.2em; color: var(--buho-text-light);">Acceso rápido y documentación del proyecto en <a href="https://banlist.elbuho89.org" style="color: var(--buho-gold); font-weight: 700;">banlist.elbuho89.org</a></p>
+        </header>
+
+        <section id="summary">
+            <h2>📝 Resumen y Puntos Clave / Key Summary Points</h2>
+            
+            <div class="summary-flex">
+                <div>
+                    <h3>Resumen en Español</h3>
+                    <p>Lista dinámica de nombres de usuario asociados con spam, "follow bots" y actividad maliciosa en Twitch. Optimizada para ser consumida automáticamente por APIs de moderación.</p>
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i> **ADVERTENCIA CRÍTICA:** Revise <a href="./data/monitoreo.txt" class="warning">monitoreo.txt</a> antes de sancionar.
+                    </div>
+                </div>
+                
+                <div>
+                    <h3>English Summary</h3>
+                    <p>A community-maintained, dynamic list of usernames associated with spam, fake follows, and malicious activity on Twitch. Optimized for automated consumption via **TXT/JSON Raw URLs**.</p>
+                    <div class="warning-box">
+                        <i class="fas fa-exclamation-triangle"></i> **CRITICAL WARNING:** Check <a href="./data/monitoreo.txt" class="warning">monitoreo.txt</a> before sanctioning manually.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="api-access" style="text-align: center; margin: 40px 0;">
+            <h2>🔗 Enlaces API Directos / Direct API Links</h2>
+            <p style="color: var(--buho-gold);">Usa estos enlaces RAW para integrarte con CommanderRoot, StreamElements u otras herramientas de moderación.</p>
+            
+            <div class="api-buttons">
+                <a href="https://raw.githubusercontent.com/elbuho89/twitchbotsbanlist/main/data/ban.txt" target="_blank" class="cta-button api-link">
+                    <i class="fas fa-file-alt"></i> ban.txt (API TXT RAW)
+                </a>
+                <a href="https://raw.githubusercontent.com/elbuho89/twitchbotsbanlist/main/data/ban.json" target="_blank" class="cta-button api-link">
+                    <i class="fas fa-code"></i> ban.json (API JSON RAW)
+                </a>
+                <a href="./data/monitoreo.txt" target="_blank" class="cta-button api-link">
+                    <i class="fas fa-eye"></i> monitoreo.txt (Sospechosos)
+                </a>
+            </div>
+        </section>
+
+
+        <section id="menu">
+            <h2>🧭 Guía del Repositorio / Repository Guide</h2>
+            <p>Tabla de navegación que detalla la función de cada archivo y carpeta principal del proyecto. Haz clic en el nombre para ir al archivo.</p>
+            
+            <div class="menu-table-wrapper">
+                <table class="menu-table">
+                    <thead>
+                        <tr>
+                            <th>Elemento</th>
+                            <th>Descripción / Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><a href="./index.html">index.html</a></td><td>**ES:** Portada principal del sitio web. **EN:** Main website landing page.</td></tr>
+                        <tr><td><a href="./data/">data/</a></td><td>**ES:** Contiene las listas de nombres de usuario en formato puro para consumo API. **EN:** Contains raw username lists for API consumption.</td></tr>
+                        <tr><td class="indent">├── <a href="./data/ban.txt">ban.txt</a></td><td>**ES:** Lista principal de baneos confirmados (TXT). **EN:** Main confirmed ban list (TXT).</td></tr>
+                        <tr><td class="indent">├── <a href="./data/ban.json">ban.json</a></td><td>**ES:** Lista principal de baneos confirmados (JSON). **EN:** Main confirmed ban list (JSON).</td></tr>
+                        <tr><td class="indent">└── <a href="./data/monitoreo.txt">monitoreo.txt</a></td><td>**ES:** Cuentas que requieren **revisión manual obligatoria**. **EN:** Accounts requiring **mandatory manual review**.</td></tr>
+                        <tr><td><a href="./Español/">Español/</a></td><td>Carpeta de la **Documentación y Protocolos en Español**.</td></tr>
+                        <tr><td class="indent">└── <a href="./Español/LEEME.md">LEEME.md</a></td><td>**ES:** Contiene el **Aviso Legal, Protocolo de Moderación** y fuentes. **Lectura Obligatoria para Moderadores.**</td></tr>
+                        <tr><td><a href="./English/">English/</a></td><td>Folder for **English Documentation and Protocols**.</td></tr>
+                        <tr><td class="indent">└── <a href="./English/README.md">README.md</a></td><td>**EN:** Contains the **Full Disclaimer, Moderation Protocol**, and data sources. **Mandatory Reading for Moderators.**</td></tr>
+                        <tr><td><a href="./README.md">README.md</a></td><td>**ES:** Archivo de entrada de GitHub. Breve resumen del proyecto. **EN:** GitHub entry file. Brief bilingual project summary.</td></tr>
+                        <tr><td><a href="./LICENSE">LICENSE</a></td><td>**ES:** Licencia de Código Abierto (MIT). **EN:** Open Source License (MIT).</td></tr>
+                        <tr><td><a href="./MENU.md">MENU.md</a></td><td>**ES:** Este documento (si se accede desde GitHub). **EN:** This document (if accessed from GitHub).</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <section id="protocol" style="margin-top: 50px;">
+            <h2 style="border-bottom: 2px solid var(--buho-red);">🛑 Aviso Legal y Protocolo Completo (Disclaimer)</h2>
+            
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab('es', this)">🇪🇸 Español</button>
+                <button class="tab-button" onclick="openTab('en', this)">🇬🇧 English</button>
+            </div>
+
+            <div id="es-content" class="tab-content">
+                <h3>1. Objeto y Fuentes de la Lista</h3>
+                <p>Esta lista de usuarios es una compilación dinámica de nombres de usuario de la plataforma Twitch identificados con patrones de **"follow fake"**, spam, bots de publicidad, ataques de *hate raid* u otros comportamientos maliciosos. Su único fin es la protección y mejora de la moderación de canales.</p>
+                <ul>
+                    <li>**Listas de Bloqueo Públicas de la Comunidad.**</li>
+                    <li>**Sistemas de Moderación Avanzada:** Datos generados por bots reconocidos como **sery\_bot** y **CommanderRoot**.</li>
+                    <li>**Repositorios Comunitarios** y Listas Internas/Privadas.</li>
+                </ul>
+
+                <h3>2. Riesgo de Inexactitud y Exención de Responsabilidad</h3>
+                <p class="warning">**RIESGO DE FALSOS POSITIVOS:** Existe un riesgo inherente de que usuarios legítimos sean sancionados incorrectamente. **USO BAJO SU PROPIO RIESGO:** Al integrar esta lista a través de APIs de terceros, **usted asume la total responsabilidad** por cualquier acción de sanción automática. Ni **[EL BUHO 89 . ORG SAS]** ni sus mantenedores asumen responsabilidad alguna por daños causados.</p>
+
+                <h3>3. Marco Legal y Protección de Datos</h3>
+                <p>Mantenida con la intención de cumplir con las leyes de la República de Colombia (Ley 1581 de 2012). Los datos son **públicos** (nombres de usuario de Twitch) y se recolectan con un fin legítimo (seguridad y moderación).</p>
+                
+                <h3>4. Solicitudes de Corrección y Soporte</h3>
+                <p>Si un nombre de usuario fue agregado o eliminado por error, por favor **genere un Ticket de Soporte (Issue)** en nuestro repositorio de GitHub. Nuestro personal verificará la información con diligencia.</p>
+                
+                <hr style="margin-top: 30px; border-color: var(--buho-light-gray);">
+                <p style="text-align: center; font-weight: 600;">
+                    <i class="fas fa-check-circle" style="color: var(--buho-gold);"></i> **Aceptación:** Al usar nuestra lista, usted declara haber leído y entendido este Aviso Legal, asumiendo la responsabilidad total.
+                </p>
+            </div>
+
+            <div id="en-content" class="tab-content" style="display: none;">
+                <h3>1. Purpose and Data Sources</h3>
+                <p>This list is a dynamic compilation of Twitch usernames identified with patterns of **fake follows**, spam, ad bots, *hate raids*, or other malicious behaviors. Its sole purpose is the protection and enhancement of channel moderation.</p>
+                <ul>
+                    <li>**Public Community Blocklists.**</li>
+                    <li>**Advanced Moderation Systems:** Data generated by bots such as **sery\_bot** and **CommanderRoot**.</li>
+                    <li>**Community Repositories** and shared private lists.</li>
+                </ul>
+
+                <h3>2. Risk of Inaccuracy and Liability Waiver</h3>
+                <p class="warning">**RISK OF FALSE POSITIVES:** There is an inherent risk that legitimate users may be incorrectly sanctioned. **USE AT YOUR OWN RISK:** By integrating this list via third-party APIs, **the user assumes full responsibility** for any automatic sanction. Neither **[EL BUHO 89 . ORG SAS]** nor its maintainers are liable for any damages or errors caused.</p>
+
+                <h3>3. Legal Framework and Data Protection</h3>
+                <p>Maintained in compliance with the laws of the Republic of Colombia (Law 1581 of 2012). The data is declared **public** (Twitch usernames) and is collected for a legitimate purpose (security and moderation).</p>
+                
+                <h3>4. Correction Requests and Support</h3>
+                <p>If a username was incorrectly added or removed, please **Open a Support Ticket (Issue)** on our GitHub repository. Our staff will diligently verify the information.</p>
+
+                <hr style="margin-top: 30px; border-color: var(--buho-light-gray);">
+                <p style="text-align: center; font-weight: 600;">
+                    <i class="fas fa-check-circle" style="color: var(--buho-gold);"></i> **Acceptance:** By using our bot list, you declare that you have read and understood this Legal Disclaimer, assuming total responsibility.
+                </p>
+            </div>
+        </section>
+
+        <footer style="text-align: center; margin-top: 50px; padding: 20px 0; border-top: 1px solid var(--buho-light-gray);">
+            <p>EL BUHO 89 ™ | <a href="https://elbuho89.org" style="color: var(--buho-gold);">Website</a> | <a href="./LICENSE">License</a></p>
+        </footer>
+    </div>
+
+    <script>
+        function openTab(tabName, elmnt) {
+            // Oculta todo el contenido de las pestañas
+            var i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            // Remueve la clase "active" de todos los botones
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].className = tabbuttons[i].className.replace(" active", "");
+            }
+            
+            // Muestra la pestaña actual, y añade la clase "active" al botón
+            document.getElementById(tabName + "-content").style.display = "block";
+            elmnt.className += " active";
+        }
+    </script>
+</body>
+</html>
