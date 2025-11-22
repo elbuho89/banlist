@@ -16,8 +16,11 @@ Lista dinámica de nombres de usuario asociados con spam, "follow bots" y activi
 
 **[DOCUMENTACIÓN Y PROTOCOLOS COMPLETOS EN ESPAÑOL AQUÍ](https://github.com/elbuho89/banlist/tree/main/Español)**
 
-⚠️ **ADVERTENCIA CRÍTICA:** Revise el archivo `data/monotoreo.txt` antes de sancionar manualmente a cualquier usuario.
+⚠️ **ADVERTENCIA CRÍTICA:** Revise el archivo `data/monitoreo.txt` antes de sancionar manualmente a cualquier usuario.
 
 ---
 
 [**LICENSE**](LICENSE)
+
+
+
