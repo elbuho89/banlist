@@ -1,12 +1,6 @@
-¡Entendido\! Un solo menú consolidado es mucho más eficiente para la navegación rápida.
+## 🗺️ BAN LIST BOTS TWITCH
 
-Aquí tienes el contenido del archivo `MENU.md` con una única tabla de navegación bilingüe, donde la descripción y el uso se presentan en ambos idiomas en la misma celda.
-
-## 🗺️ GUÍA DEL REPOSITORIO Y MENÚ PRINCIPAL
-
-Este documento sirve como un mapa detallado para entender la estructura, la organización de los archivos y los protocolos de esta Lista de Baneos de Bots de Twitch.
-
-**URL del Sitio Web:** `https://banlist.elbuho89.org`
+**[https://banlist.elbuho89.org](https://banlist.elbuho89.org)**
 
 -----
 
